@@ -1,0 +1,64 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+EXECUTION_DIR=$(basename $SCRIPT_DIR/../execution)
+
+# should be 2 params
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 --miner.etherbase <address>"
+    exit 1
+fi
+
+# get the address from the params
+get_miner_address() {
+  # param 1 should be '--miner.etherbase'
+  if [ "$1" != "--miner.etherbase" ]; then
+      echo "Usage: $0 --miner.etherbase <address>"
+      exit 1
+  fi
+  # param 2 should be the address
+  # should be 40 characters
+  if [ ${#2} -ne 40 ]; then
+      echo "Invalid address: $MINER_ADDRESS"
+      echo "Usage: $0 --miner.etherbase <address>"
+      exit 1
+  fi
+  # return the address in all lowercase
+  echo "$2" | tr '[:upper:]' '[:lower:]'
+}
+miner_address=$(get_miner_address "${@}")
+
+# jq not available in the docker image, so we use sed to extract the address
+# MINER_ADDRESS=${MINER_ADDRESS:-$(cat $(find $1 -type f -name "UTC*" | head -n 1) | sed -n 's/.*"address":"\([^"]*\)".*/\1/p')}
+# cut last 40 characters (in case of leading 0x)
+# MINER_ADDRESS=${MINER_ADDRESS: -40}
+
+# output MINER_ADDRESS to .env (all lowercase???)
+echo "MINER_ADDRESS=0x${miner_address}" > $EXECUTION_DIR/.env
+
+# test test test test test test test test test test test junk
+DEPLOYER_ADDRESS=${DEPLOYER_ADDRESS:-f39Fd6e51aad88F6F4ce6aB8827279cffFb92266}
+genesis_json=$(cat $SCRIPT_DIR/../genesis.json.template \
+    | sed "s/CHAIN_ID/${CHAIN_ID:-31337}/g" \
+    | sed "s/DEPLOYER_ADDRESS/${DEPLOYER_ADDRESS}/g" \
+    | sed "s/MINER_ADDRESS/${miner_address}/g" \
+    | sed "s/ADDRESS_USER1/${ADDRESS_USER1:-0000000000000000000000000000000000000002}/g" \
+    | sed "s/ADDRESS_USER2/${ADDRESS_USER2:-0000000000000000000000000000000000000003}/g" \
+    | sed "s/ADDRESS_USER3/${ADDRESS_USER3:-0000000000000000000000000000000000000004}/g" \
+)
+echo "$genesis_json"
+
+# check if there is existing genesis.json
+if [ -f $EXECUTION_DIR/genesis.json ]; then
+    echo "genesis.json already exists"
+    echo "$genesis_json" > $EXECUTION_DIR/genesis.json
+    echo "Overwrote genesis.json"
+else
+  # write genesis.json to file
+  echo "$genesis_json" > $EXECUTION_DIR/genesis.json
+  echo "Created genesis.json"
+fi

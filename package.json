@@ -1,0 +1,16 @@
+{
+  "name": "testnet",
+  "version": "0.1.0",
+  "description": "Ethereum testnet",
+  "author": "Cory Gabrielsen (cory.eth)",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "mkgenesis": "scripts/create-genesis-config --miner.etherbase 0000000c31f7b3221f7e405c8e735abd3b10a78d",
+    "regenesis": "scripts/regenesis",
+    "rpc": "scripts/rpc",
+    "rpc:auth": "scripts/rpc-auth execution/geth/jwtsecret localhost:8545",
+    "start": "docker compose up --force-recreate",
+    "start:detach": "docker compose up --force-recreate -d"
+  },
+  "dependencies": {}
+}

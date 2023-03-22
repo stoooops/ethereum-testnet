@@ -1,0 +1,10 @@
+#!/bin/bash
+
+PWD=$(pwd)
+set -x
+docker run \
+  --rm \
+  -v ${PWD}/execution:/execution \
+  --user=${UID}:${GID} \
+  --entrypoint /bin/sh \
+  ethereum/client-go:latest -c 'rm -rf /execution/geth && geth --datadir=/execution init /execution/genesis.json'
