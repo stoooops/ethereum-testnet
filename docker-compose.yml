@@ -8,7 +8,7 @@ services:
   # Starts the go-ethereum client with the genesis configuration.
   geth:
     container_name: geth${RUN_ID}
-    image: ethereum/client-go:latest
+    image: ethereum/client-go:v1.11.6-amd64
     user: $UID:$GID
     command:
       - --datadir=/execution
