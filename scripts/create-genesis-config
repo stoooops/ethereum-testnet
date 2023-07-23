@@ -43,7 +43,7 @@ echo "MINER_ADDRESS=0x${miner_address}" > $EXECUTION_DIR/.env
 # test test test test test test test test test test test junk
 DEPLOYER_ADDRESS=${DEPLOYER_ADDRESS:-f39Fd6e51aad88F6F4ce6aB8827279cffFb92266}
 genesis_json=$(cat $SCRIPT_DIR/../genesis.json.template \
-    | sed "s/CHAIN_ID/${CHAIN_ID:-31337}/g" \
+    | sed "s/CHAIN_ID/${CHAIN_ID:-1337}/g" \
     | sed "s/DEPLOYER_ADDRESS/${DEPLOYER_ADDRESS}/g" \
     | sed "s/MINER_ADDRESS/${miner_address}/g" \
     | sed "s/ADDRESS_USER1/${ADDRESS_USER1:-0000000000000000000000000000000000000002}/g" \

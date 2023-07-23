@@ -9,7 +9,7 @@ services:
   # a deterministic set of 64 validators.
   create-beacon-chain-genesis:
     container_name: prysmctl${RUN_ID}
-    image: "gcr.io/prysmaticlabs/prysm/cmd/prysmctl:latest"
+    image: gcr.io/prysmaticlabs/prysm/cmd/prysmctl:latest
     user: $UID:$GID
     command:
       - testnet
@@ -33,7 +33,7 @@ services:
     command:
       - --datadir=/execution
       - --dev
-      - --networkid=${CHAIN_ID:-31337}
+      - --networkid=${CHAIN_ID:-1337}
       - --unlock=0000000c31f7b3221f7e405c8e735abd3b10a78d
       - --password=/execution/geth_password.txt
       - --allow-insecure-unlock
@@ -79,7 +79,7 @@ services:
   # proposed via the validators attached to the beacon node.
   beacon-chain:
     container_name: prysm-beacon-chain${RUN_ID}
-    image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest"
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
     user: $UID:$GID
     command:
       - --datadir=/consensus/beacondata
@@ -90,7 +90,7 @@ services:
       # The chain configuration file used for setting up Prysm
       - --chain-config-file=/consensus/config.yml
       # We specify the chain id used by our execution client
-      - --chain-id=${CHAIN_ID:-31337}
+      - --chain-id=${CHAIN_ID:-1337}
       - --rpc-host=0.0.0.0
       - --contract-deployment-block=0
       - --grpc-gateway-host=0.0.0.0
@@ -116,12 +116,11 @@ services:
     networks:
       - testnet
 
-
   # We run a validator client with 64, deterministically-generated keys that match
   # The validator keys present in the beacon chain genesis state generated a few steps above.
   validator:
     container_name: prysm-validator${RUN_ID}
-    image: "gcr.io/prysmaticlabs/prysm/validator:latest"
+    image: 'gcr.io/prysmaticlabs/prysm/validator:latest'
     user: $UID:$GID
     command:
       - --beacon-rpc-provider=beacon-chain:4000
