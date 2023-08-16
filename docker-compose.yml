@@ -33,7 +33,7 @@ services:
     command:
       - --datadir=/execution
       - --dev
-      - --networkid=${CHAIN_ID:-31337}
+      - --networkid=${CHAIN_ID:-1337}
       - --unlock=0000000c31f7b3221f7e405c8e735abd3b10a78d
       - --password=/execution/geth_password.txt
       - --allow-insecure-unlock
@@ -90,7 +90,7 @@ services:
       # The chain configuration file used for setting up Prysm
       - --chain-config-file=/consensus/config.yml
       # We specify the chain id used by our execution client
-      - --chain-id=${CHAIN_ID:-31337}
+      - --chain-id=${CHAIN_ID:-1337}
       - --rpc-host=0.0.0.0
       - --contract-deployment-block=0
       - --grpc-gateway-host=0.0.0.0
